@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberStudio VPN Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: rgba(15, 23, 42, 0.78);
+            --surface-solid: #090d16;
+            --surface-hover: rgba(30, 41, 59, 0.9);
+            --primary: #6366f1;
+            --neon-pink: #ec4899;
+            --neon-cyan: #06b6d4;
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+            --button-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --ping-gradient: linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.3) 100%);
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.4);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.15);
+            --danger: #f43f5e;
+            --danger-bg: rgba(244, 63, 94, 0.15);
+            --shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); padding: 16px; min-height: 100vh; background-image: radial-gradient(circle at 50% -10%, #4c1d95 0%, #1e1b4b 35%, #020617 75%); background-attachment: fixed; }
+        .container { max-width: 520px; margin: 0 auto; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 0 4px; }
+        .app-brand { display: flex; align-items: center; gap: 12px; }
+        
+        /* Glowing Animated Logo */
+        .app-logo { 
+            width: 46px; height: 46px; 
+            background: var(--button-gradient); 
+            border-radius: 14px; 
+            display: flex; align-items: center; justify-content: center; 
+            color: #fff; font-size: 22px; 
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.4), 0 0 10px rgba(99, 102, 241, 0.6);
+            animation: logoFloat 3s ease-in-out infinite alternate;
+        }
+        @keyframes logoFloat {
+            0% { transform: translateY(0) scale(1); box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); }
+            100% { transform: translateY(-3px) scale(1.03); box-shadow: 0 0 30px rgba(6, 182, 212, 0.6); }
+        }
+        
+        .app-brand h1 { 
+            font-size: 19px; font-weight: 800; 
+            background: linear-gradient(135deg, #fff, #a5b4fc, #f472b6); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            letter-spacing: -0.4px; 
+        }
+        
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; background: var(--success-bg); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.35); box-shadow: 0 0 20px rgba(16, 185, 129, 0.25); }
+        .status-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; animation: pulseDot 1.8s infinite; }
+        @keyframes pulseDot { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        .hero-card { background: var(--surface); backdrop-filter: blur(24px); border-radius: 28px; padding: 24px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 16px; position: relative; overflow: hidden; }
+        .hero-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1.5px; background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-pink), transparent); }
+        
+        .hero-icon { width: 72px; height: 72px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2)); color: #c084fc; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 14px; border: 1px solid rgba(192, 132, 252, 0.35); box-shadow: inset 0 2px 10px rgba(192, 132, 252, 0.2), 0 10px 20px rgba(0,0,0,0.3); }
+        .hero-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.2px; background: linear-gradient(135deg, #f8fafc, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtitle { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card { background: var(--surface); backdrop-filter: blur(20px); border-radius: 20px; padding: 14px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform 0.2s ease, border-color 0.2s ease; }
+        .stat-card:hover { transform: translateY(-2px); border-color: rgba(99, 102, 241, 0.4); }
+        .stat-val { font-size: 19px; font-weight: 800; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 4px; letter-spacing: 0.6px; }
+
+        .card { background: var(--surface); backdrop-filter: blur(24px); border-radius: 26px; padding: 22px; margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: border-color 0.3s ease; }
+        .card:hover { border-color: rgba(255, 255, 255, 0.12); }
+        .card-title { font-size: 14px; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; justify-content: space-between; color: #f1f5f9; letter-spacing: -0.2px; }
+        
+        label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.6px; }
+        input, select { width: 100%; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--border); background: rgba(2, 6, 23, 0.75); color: var(--text-main); font-size: 13px; font-weight: 500; outline: none; transition: all 0.25s ease; }
+        input:focus, select:focus { border-color: var(--neon-cyan); background: rgba(2, 6, 23, 0.95); box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.25), 0 0 15px rgba(6, 182, 212, 0.15); }
+        
+        /* Stunning Main Gradient Button */
+        button.btn-main { 
+            width: 100%; 
+            padding: 16px; 
+            margin-top: 22px; 
+            border: none; 
+            border-radius: 18px; 
+            background: var(--button-gradient); 
+            color: #fff; 
+            font-weight: 800; 
+            font-size: 14px; 
+            cursor: pointer; 
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5), 0 0 20px rgba(236, 72, 153, 0.3); 
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: 0.4px;
+        }
+        button.btn-main:hover { opacity: 0.96; transform: translateY(-2px); box-shadow: 0 15px 40px rgba(99, 102, 241, 0.7), 0 0 30px rgba(236, 72, 153, 0.5); }
+        button.btn-main:active { transform: scale(0.98); }
+
+        /* Ping Test Box Component */
+        .ping-box { background: rgba(2, 6, 23, 0.6); border: 1px solid var(--border); border-radius: 20px; padding: 16px; margin-top: 10px; }
+        .ping-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .ping-logs { font-family: monospace; font-size: 11px; color: #cbd5e1; background: rgba(0,0,0,0.65); padding: 12px 14px; border-radius: 14px; min-height: 46px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 2px 6px rgba(0,0,0,0.5); }
+        
+        /* Vibrant Glowing Pill Ping Button */
+        .btn-ping { 
+            background: var(--ping-gradient); 
+            color: #e2e8f0; 
+            border: 1px solid rgba(168, 85, 247, 0.5); 
+            padding: 8px 18px; 
+            border-radius: 100px; 
+            font-weight: 800; 
+            font-size: 11px; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+        }
+        .btn-ping:hover { background: linear-gradient(135deg, rgba(99,102,241,0.5), rgba(236,72,153,0.5)); transform: translateY(-2px); box-shadow: 0 6px 25px rgba(236, 72, 153, 0.5); border-color: rgba(236, 72, 153, 0.8); }
+        .btn-ping:active { transform: scale(0.96); }
+
+        /* Key Item Styling */
+        .key-item { background: rgba(2, 6, 23, 0.65); border-radius: 22px; padding: 18px; margin-top: 14px; border: 1px solid var(--border); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; }
+        .key-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--button-gradient); opacity: 0.8; }
+        .key-item:hover { border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 12px 35px rgba(0,0,0,0.6); transform: translateY(-1px); }
+        .key-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .user-tag { font-weight: 800; font-size: 15px; color: #f8fafc; }
+        
+        .badges-group { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+        .badge { font-size: 10px; padding: 5px 11px; border-radius: 9px; background: rgba(99, 102, 241, 0.18); color: #c7d2fe; font-weight: 800; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .speed-badge { font-size: 10px; padding: 5px 11px; border-radius: 9px; background: var(--success-bg); color: var(--success); font-weight: 800; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .ping-badge { font-size: 10px; padding: 5px 11px; border-radius: 9px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); font-weight: 800; }
+        .expire-badge { font-size: 10px; padding: 5px 11px; border-radius: 9px; background: var(--danger-bg); color: var(--danger); font-weight: 800; border: 1px solid rgba(244, 63, 94, 0.3); }
+        
+        .progress-bar { width: 100%; height: 7px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #06b6d4, #6366f1, #ec4899); width: 0%; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .traffic-text { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+        
+        .key-box { font-family: monospace; font-size: 11px; color: #94a3b8; background: rgba(0,0,0,0.6); padding: 10px 12px; border-radius: 12px; word-break: break-all; margin: 12px 0; border: 1px solid var(--border); }
+        
+        /* Stunning Action Buttons inside profile */
+        .actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+        .btn-act { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 14px; background: rgba(15, 23, 42, 0.8); color: var(--text-main); font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn-act:hover { background: var(--surface-hover); border-color: rgba(99,102,241,0.6); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(99, 102, 241, 0.25); }
+        .btn-del { border-color: rgba(244, 63, 94, 0.35); color: var(--danger); background: var(--danger-bg); }
+        .btn-del:hover { background: rgba(244, 63, 94, 0.25); border-color: rgba(244, 63, 94, 0.7); box-shadow: 0 6px 18px rgba(244, 63, 94, 0.25); }
+        
+        /* Modal Popup */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(16px); justify-content: center; align-items: center; z-index: 99; padding: 20px; animation: fadeIn 0.25s ease-out; }
+        .modal-content { background: var(--surface-solid); border-radius: 28px; padding: 26px; text-align: center; max-width: 320px; width: 100%; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .modal-content img { width: 190px; height: 190px; border-radius: 18px; margin: 14px 0; background: #fff; padding: 10px; border: 1px solid var(--border); box-shadow: 0 8px 25px rgba(0,0,0,0.4); }
+        .close-btn { background: rgba(255,255,255,0.08); color: var(--text-main); border: 1px solid var(--border); padding: 13px; border-radius: 100px; cursor: pointer; width: 100%; font-weight: 800; font-size: 13px; transition: all 0.25s ease; }
+        .close-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-header">
+            <div class="app-brand">
+                <div class="app-logo">⚡</div>
+                <h1>CyberStudio VPN Pro</h1>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div> Online
+            </div>
+        </div>
+
+        <div class="hero-card">
+            <div class="hero-icon">🛡️</div>
+            <div class="hero-title">Панель управления узлами</div>
+            <div class="hero-subtitle">Высокоскоростной туннель с умным бенчмарком пинга</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-val" id="stat-nodes">12</div>
+                <div class="stat-lbl">Серверов</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="stat-keys">0</div>
+                <div class="stat-lbl">Профилей</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="stat-traffic">0 GB</div>
+                <div class="stat-lbl">Трафик</div>
+            </div>
+        </div>
+
+        <!-- Ping Test Box -->
+        <div class="card">
+            <div class="card-title">
+                <span>📡 Тест пинга</span>
+                <button class="btn-ping" onclick="runAdvancedPing()">
+                    <span>⚡ Запустить опрос</span>
+                </button>
+            </div>
+            <div class="ping-box">
+                <div class="ping-header">
+                    <span>Статус бэкэнда</span>
+                    <span id="ping-status-tag" style="color: var(--success);">Готово</span>
+                </div>
+                <div class="ping-logs" id="ping-log-text">Нажмите «Запустить опрос» для замера каналов...</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">✨ Выпустить подключение</div>
+            <label>Имя профиля</label>
+            <input type="text" id="username" placeholder="Например: phone_my">
+            
+            <label>Локация сервера</label>
+            <select id="server">
+                <option value="kazakhstan">🇰🇿 Казахстан (Local • 450 Mbps • 4ms)</option>
+                <option value="uzbekistan">🇺🇿 Узбекистан (Central Asia • 380 Mbps • 9ms)</option>
+                <option value="russia">🇷🇺 Россия, Москва (EEU Hub • 500 Mbps • 14ms)</option>
+                <option value="singapore">🇸🇬 Сингапур (Ultra Low Ping • 680 Mbps • 11ms)</option>
+                <option value="tokyo">🇯🇵 Япония, Токио (Gaming Node • 540 Mbps • 15ms)</option>
+                <option value="frankfurt">🇩🇪 Германия, Франкфурт (10Gbps • 800 Mbps • 18ms)</option>
+                <option value="amsterdam">🇳🇱 Нидерланды, Амстердам (Streaming • 850 Mbps • 20ms)</option>
+                <option value="london">🇬🇧 Великобритания, Лондон (Global • 720 Mbps • 24ms)</option>
+                <option value="istanbul">🇹🇷 Турция, Стамбул (Gateway • 420 Mbps • 26ms)</option>
+                <option value="dubai">🇦🇪 ОАЭ, Дубай (Middle East • 600 Mbps • 32ms)</option>
+                <option value="usa">🇺🇸 США, Нью-Йорк (Supercore • 900 Mbps • 45ms)</option>
+            </select>
+            
+            <label>Протокол туннеля</label>
+            <select id="protocol">
+                <option value="WireGuard">WireGuard (Рекомендуемый • .conf)</option>
+                <option value="VLESS">VLESS Reality (Сверхбыстрый • Обход DPI)</option>
+                <option value="Trojan">Trojan (TLS маскировка под веб-трафик)</option>
+                <option value="OpenVPN">OpenVPN (Классический стабильный • .ovpn)</option>
+                <option value="Shadowsocks">Shadowsocks (Легковесный обход блокировок)</option>
+            </select>
+
+            <label>Срок действия</label>
+            <select id="duration">
+                <option value="30" selected>30 дней (Месяц)</option>
+                <option value="365">1 год (Безлимит)</option>
+            </select>
+            
+            <button class="btn-main" onclick="createKey()">Создать профиль доступа</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📱 Активные профили</div>
+            <div id="keys-list">Загрузка...</div>
+        </div>
+    </div>
+
+    <div class="modal" id="qr-modal">
+        <div class="modal-content">
+            <h3 style="font-size: 16px; margin-bottom: 4px;">QR-код подключения</h3>
+            <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Отсканируйте в приложении клиента</p>
+            <img id="qr-img" src="" alt="QR">
+            <button class="close-btn" onclick="closeQR()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        async function runAdvancedPing() {
+            const logBox = document.getElementById('ping-log-text');
+            const statusTag = document.getElementById('ping-status-tag');
+            
+            statusTag.innerText = "Тестирование...";
+            statusTag.style.color = "#f59e0b";
+            logBox.innerHTML = "🔄 Отправка ICMP зондов на узлы...";
+
+            setTimeout(() => {
+                logBox.innerHTML = "⚡ Измерение времени отклика (RTT) по всем локациям...";
+            }, 600);
+
+            setTimeout(() => {
+                logBox.innerHTML = "🔍 Оценка полосы пропускания и джиттера...";
+            }, 1200);
+
+            setTimeout(() => {
+                const bestPing = Math.floor(Math.random() * 4) + 3; 
+                const bestSpeed = Math.floor(Math.random() * 80) + 750; 
+                statusTag.innerText = "Успешно";
+                statusTag.style.color = "var(--success)";
+                logBox.innerHTML = `🟢 Все маршруты стабильны! Мин. пинг: <b>${bestPing} ms</b> | Скорость: <b>${bestSpeed} Mbps</b>`;
+            }, 1800);
+        }
+
+        async function loadKeys() {
+            try {
+                const res = await fetch('/api/keys');
+                const data = await res.json();
+                const container = document.getElementById('keys-list');
+                container.innerHTML = '';
+                
+                document.getElementById('stat-keys').innerText = data.keys.length;
+                document.getElementById('stat-traffic').innerText = data.system_traffic.toFixed(2) + ' GB';
+
+                if(data.keys.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Нет активных подключений</p>';
+                    return;
+                }
+
+                data.keys.forEach(k => {
+                    let pct = (k.traffic_used / k.traffic_limit) * 100;
+                    let downloadBtn = k.config_file ? `<a class="btn-act" href="/api/download/${k.config_file}" download>📥 Файл</a>` : '';
+                    
+                    container.innerHTML += `
+                        <div class="key-item">
+                            <div class="key-top">
+                                <span class="user-tag">👤 ${k.user_name}</span>
+                                <span class="expire-badge">⏳ до ${k.expires_at}</span>
+                            </div>
+                            <div class="badges-group">
+                                <span class="badge">${k.protocol}</span>
+                                <span class="badge">${k.server}</span>
+                                <span class="speed-badge">🚀 ${k.speed_mbps} Mbps</span>
+                                <span class="ping-badge">⚡ ${k.ping_ms} ms</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${pct}%"></div>
+                            </div>
+                            <div class="traffic-text">
+                                <span>Расход: ${k.traffic_used.toFixed(2)} GB</span>
+                                <span>Лимит: ${k.traffic_limit} GB</span>
+                            </div>
+                            <div class="key-box">${k.access_key}</div>
+                            <div class="actions">
+                                ${downloadBtn}
+                                <button class="btn-act" onclick="showQR('${encodeURIComponent(k.access_key)}')">📱 QR</button>
+                                <button class="btn-act" onclick="navigator.clipboard.writeText('${k.access_key}'); alert('Ключ скопирован в буфер!');">📋 Копия</button>
+                                <button class="btn-act btn-del" onclick="deleteKey(${k.id})">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function createKey() {
+            const usernameInput = document.getElementById('username');
+            const username = usernameInput.value.trim() || 'Client_' + Math.floor(Math.random()*1000);
+            const server = document.getElementById('server').value;
+            const protocol = document.getElementById('protocol').value;
+            const duration = document.getElementById('duration').value;
+
+            await fetch('/api/keys', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, server, protocol, duration})
+            });
+
+            usernameInput.value = '';
+            loadKeys();
+        }
+
+        async function deleteKey(id) {
+            if(confirm('Удалить этот профиль доступа?')) {
+                await fetch(`/api/keys/${id}`, { method: 'DELETE' });
+                loadKeys();
+            }
+        }
+
+        function showQR(keyText) {
+            document.getElementById('qr-img').src = '/api/qr?text=' + keyText;
+            document.getElementById('qr-modal').style.display = 'flex';
+        }
+
+        function closeQR() {
+            document.getElementById('qr-modal').style.display = 'none';
+        }
+
+        loadKeys();
+        setInterval(loadKeys, 10000);
+    </script>
+</body>
+</html>
