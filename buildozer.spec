@@ -12,3 +12,4 @@ android.permissions = INTERNET
 
 [buildozer]
 log_level = 2
+android.ant_path = /usr
