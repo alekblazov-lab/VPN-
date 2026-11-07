@@ -30,13 +30,17 @@ jobs:
           unzip -q tools.zip
           mv cmdline-tools latest
           rm tools.zip
-          # Создаём симлинк, чтобы Buildozer нашёл sdkmanager по старому пути
           mkdir -p ~/.buildozer/android/platform/android-sdk/tools/bin
           ln -sf ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager ~/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
 
       - name: Accept Android Licenses
         run: |
           yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Link system Ant to expected location
+        run: |
+          mkdir -p ~/.buildozer/android/platform
+          ln -sf /usr/share/ant ~/.buildozer/android/platform/apache-ant-1.9.4
 
       - name: Build with Buildozer
         run: |
